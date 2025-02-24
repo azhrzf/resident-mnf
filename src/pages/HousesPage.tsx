@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
 import { getHouses } from "@/api/main";
 import { House } from "@/api/types";
-import HouseCard from "@/components/global/HouseCard";
+import HouseCard from "@/components/global/House/HouseCard";
+import HouseAdd from "@/components/global/House/HouseAdd";
+import PageTitle from "@/components/global/PageTitle";
+import LoadingSpin from "@/components/global/LoadingSpin";
 
 const HousesPage = () => {
   const [houses, setHouses] = useState<House[]>([]);
@@ -20,14 +23,15 @@ const HousesPage = () => {
     };
 
     fetchHouses();
-  }, []);
+  }, [loading]);
 
   return (
-    <div>
-      <h1>Houses Page</h1>
-      {loading && <p>Loading expenses...</p>}
+    <div className="space-y-5">
+      <PageTitle title="Rumah" />
+      <HouseAdd setLoading={setLoading} />
+      {loading && <LoadingSpin />}
       {!loading && (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
           {houses.map((house) => (
             <HouseCard key={house.id} house={house} />
           ))}

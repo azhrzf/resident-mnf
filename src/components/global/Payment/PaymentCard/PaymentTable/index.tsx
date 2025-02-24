@@ -12,21 +12,23 @@ import {
 const PaymentTable = ({ payments }: { payments: MultiPayment[] }) => {
   return (
     <Table>
-      <TableCaption>A list of your recent invoices.</TableCaption>
+      <TableCaption>Tabel Pembayaran.</TableCaption>
       <TableHeader>
         <TableRow>
-          <TableHead>Tipe Pembayaran</TableHead>
+          <TableHead>No</TableHead>
+          <TableHead>Tipe</TableHead>
           <TableHead>Nomor Rumah</TableHead>
           <TableHead>Nama Pembayar</TableHead>
-          <TableHead>Jumlah Pembayaran</TableHead>
-          <TableHead>Tanggal Pembayaran</TableHead>
-          <TableHead>Periode Pembayaran</TableHead>
-          <TableHead>Status Pembayaran</TableHead>
+          <TableHead>Jumlah</TableHead>
+          <TableHead>Tanggal</TableHead>
+          <TableHead>Periode</TableHead>
+          <TableHead>Status</TableHead>
+          <TableHead>Aksi</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
-        {payments.map((payment) => (
-          <PaymentRow key={payment.id} payment={payment} />
+        {payments.map((payment, index) => (
+          <PaymentRow key={payment.id} payment={payment} index={index} />
         ))}
       </TableBody>
     </Table>

@@ -1,68 +1,23 @@
 import { useState, useEffect } from "react";
 import { getAllSummary } from "@/api/main";
-import { AllSummary, AllChartData, MultiPayment } from "@/api/types";
-import PaymentTable from "@/components/global/PaymentTable";
-import { TrendingUp } from "lucide-react";
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
-
-const chartConfig = {
-  paymentPaid: {
-    label: "Pembayaran Lunas",
-    color: "hsl(var(--chart-1))",
-  },
-  paymentUnpaid: {
-    label: "Pembayaran Belum Lunas",
-    color: "hsl(var(--chart-2))",
-  },
-  expense: {
-    label: "Pengeluaran",
-    color: "hsl(var(--chart-3))",
-  },
-} satisfies ChartConfig;
-
+import { AllSummary } from "@/api/types";
+import SummaryChart from "@/components/global/Summary/SummaryChart";
+import PaymentCard from "@/components/global/Payment/PaymentCard";
+import ExpenseCard from "@/components/global/Expense/ExpenseCard";
+import PageTitle from "@/components/global/PageTitle";
+import LoadingSpin from "@/components/global/LoadingSpin";
 
 const ReportSummaryPage = () => {
-  const [chartData, setChartData] = useState<AllChartData[]>([]);
-  const [payments, setPayments] = useState<MultiPayment[][]>([]);
+  const [summary, setSummary] = useState<AllSummary[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchAllSummary = async () => {
       try {
-        const data = await getAllSummary(
-          ["2025-01-01", "2025-02-01"],
-          "complete"
-        );
+        const data = await getAllSummary();
 
-        const formattedChartData = data.map((summary: AllSummary) => ({
-          date: `${summary.month}/${summary.year}`,
-          paymentPaid: summary.payment_total_paid,
-          paymentUnpaid: summary.payment_total_unpaid,
-          expense: summary.expense_total,
-        }));
-
-        setChartData(formattedChartData);
-
-        const formattedPaymentsData = data.map((summary: AllSummary) => {
-          return summary.payments;
-        });
-
-        console.log(formattedPaymentsData);
-
-        setPayments(formattedPaymentsData);
+        setSummary(data);
+        setLoading(false);
       } catch (error) {
         console.error("Failed to fetch summary:", error);
       }
@@ -72,53 +27,20 @@ const ReportSummaryPage = () => {
   }, []);
 
   return (
-    <div>
-      <h1>Report Summary Page</h1>
-      <Card>
-        <CardHeader>
-          <CardTitle>Bar Chart - Multiple</CardTitle>
-          <CardDescription>January - June 2024</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <ChartContainer config={chartConfig}>
-            <BarChart accessibilityLayer data={chartData}>
-              <CartesianGrid vertical={false} />
-              <XAxis
-                dataKey="date"
-                tickLine={false}
-                tickMargin={10}
-                axisLine={false}
-              />
-              <ChartTooltip
-                cursor={false}
-                content={<ChartTooltipContent indicator="dashed" />}
-              />
-              <Bar
-                dataKey="paymentPaid"
-                fill="var(--color-paymentPaid)"
-                radius={4}
-              />
-              <Bar
-                dataKey="paymentUnpaid"
-                fill="var(--color-paymentUnpaid)"
-                radius={4}
-              />
-              <Bar dataKey="expense" fill="var(--color-expense)" radius={4} />
-            </BarChart>
-          </ChartContainer>
-        </CardContent>
-        <CardFooter className="flex-col items-start gap-2 text-sm">
-          <div className="flex gap-2 font-medium leading-none">
-            Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-          </div>
-          <div className="leading-none text-muted-foreground">
-            Showing total visitors for the last 6 months
-          </div>
-        </CardFooter>
-      </Card>
-      {payments.map((payment, index) => (
-        <PaymentTable key={index} payments={payment} />
-      ))}
+    <div className="space-y-5">
+      <PageTitle title="Report Summary"/>
+      {loading && <LoadingSpin />}
+      {!loading && (
+        <div className="space-y-6">
+          <SummaryChart summary={summary} />
+          {summary.map((item, index) => (
+            <div key={index}>
+              <PaymentCard summary={item} />
+              <ExpenseCard summary={item} />
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

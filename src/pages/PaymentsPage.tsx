@@ -1,10 +1,13 @@
 import { useState, useEffect } from "react";
 import { getPayments } from "@/api/main";
-import { MultiPayment } from "@/api/types";
-import PaymentTable from "@/components/global/PaymentTable";
+import { PaymentSummary } from "@/api/types";
+import PaymentChart from "@/components/global/Payment/PaymentChart";
+import PaymentCard from "@/components/global/Payment/PaymentCard";
+import PageTitle from "@/components/global/PageTitle";
+import LoadingSpin from "@/components/global/LoadingSpin";
 
 const PaymentsPage = () => {
-  const [payments, setPayments] = useState<MultiPayment[]>([]);
+  const [payments, setPayments] = useState<PaymentSummary[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -23,10 +26,19 @@ const PaymentsPage = () => {
   }, []);
 
   return (
-    <div>
-      <h1>payments Page</h1>
-      {loading && <p>Loading expenses...</p>}
-      {!loading && <PaymentTable payments={payments} />}
+    <div className="space-y-5">
+      <PageTitle title="Pembayaran" />
+      {loading && <LoadingSpin />}
+      {!loading && (
+        <div className="space-y-4">
+          <PaymentChart paymentSummary={payments} />
+          <div>
+            {payments.map((payment, index) => (
+              <PaymentCard key={index} summary={payment} />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -1,18 +1,15 @@
 import { useState, useEffect } from "react";
 import { getExpenses } from "@/api/main";
-import { Expense } from "@/api/types";
-import ExpenseRow from "@/components/global/ExpenseRow";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { ExpenseSummary } from "@/api/types";
+import ExpenseChart from "@/components/global/Expense/ExpenseChart";
+import ExpenseCard from "@/components/global/Expense/ExpenseCard";
+import PageTitle from "@/components/global/PageTitle";
+import LoadingSpin from "@/components/global/LoadingSpin";
+import { buttonVariants } from "@/components/ui/button";
+import { Link } from "react-router";
 
 const ExpensesPage = () => {
-  const [expenses, setExpenses] = useState<Expense[]>([]);
+  const [expensess, setExpenses] = useState<ExpenseSummary[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -21,7 +18,7 @@ const ExpensesPage = () => {
         const data = await getExpenses();
         setExpenses(data);
       } catch (error) {
-        console.error("Failed to fetch expenses:", error);
+        console.error("Failed to fetch expensess:", error);
       } finally {
         setLoading(false);
       }
@@ -31,26 +28,24 @@ const ExpensesPage = () => {
   }, []);
 
   return (
-    <div>
-      <h1>expenses Page</h1>
-      {loading && <p>Loading expenses...</p>}
+    <div className="space-y-5">
+      <PageTitle title="Pengeluaran" />
+      {loading && <LoadingSpin />}
       {!loading && (
-        <Table>
-          <TableCaption>A list of your recent invoices.</TableCaption>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Nama Lengkap</TableHead>
-              <TableHead>Status Penghuni</TableHead>
-              <TableHead>Nomor Penghuni</TableHead>
-              <TableHead>Status Pernikahan</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {expenses.map((expense) => (
-              <ExpenseRow key={expense.id} expense={expense} />
+        <div className="space-y-4">
+          <Link
+            to="/add-expense"
+            className={buttonVariants({ variant: "outline" })}
+          >
+            Tambah Pengeluaran Baru
+          </Link>
+          <ExpenseChart expenseSummary={expensess} />
+          <div>
+            {expensess.map((expenses, index) => (
+              <ExpenseCard key={index} summary={expenses} />
             ))}
-          </TableBody>
-        </Table>
+          </div>
+        </div>
       )}
     </div>
   );

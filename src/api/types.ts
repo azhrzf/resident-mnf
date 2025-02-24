@@ -42,10 +42,10 @@ export interface Payment {
   payment_status: "paid" | "unpaid";
   created_at: Date;
   updated_at: Date;
+  fee_type: FeeType;
 }
 
 export interface MultiPayment extends Payment {
-  fee_type: FeeType;
   house_resident: HouseResidentInPayment;
 }
 
@@ -61,12 +61,20 @@ export interface HouseResidentBase {
 
 export interface HouseResidentInHouse extends HouseResidentBase {
   resident: Resident;
-  payments: (Payment & FeeType)[];
+  payments: Payment[];
+}
+
+export interface HouseExtendsHouseResident extends House {
+  house_residents: HouseResidentInHouse[];
 }
 
 export interface HouseResidentInResident extends HouseResidentBase {
   house: House;
-  payments: (Payment & FeeType)[];
+  payments: Payment[];
+}
+
+export interface ResidentExtendsHouseResident extends Resident {
+  house_residents: HouseResidentInResident[];
 }
 
 export interface HouseResidentInPayment extends HouseResidentBase {
@@ -96,27 +104,28 @@ export interface Expense {
 }
 
 export interface PaymentSummary {
+  date: string;
   year: number;
   month?: number;
-  total_unpaid: number;
-  total_paid: number;
-  payments: (Payment & {
-    fee_tyoe: FeeType;
-  })[];
+  payment_total_unpaid: number;
+  payment_total_paid: number;
+  payments: MultiPayment[];
 }
 
 export interface ExpenseSummary {
+  date: string;
   year: number;
   month?: number;
-  total_expenses: number;
+  expense_total: number;
   expenses: (Expense & {
     expense_category: ExpenseCateogry;
   })[];
 }
 
 export interface AllSummary {
-  year: string;
-  month?: string;
+  date: string;
+  year: number;
+  month?: number;
   payment_total_unpaid: number;
   payment_total_paid: number;
   expense_total: number;
@@ -126,9 +135,59 @@ export interface AllSummary {
   })[];
 }
 
-export interface AllChartData {
-  date: string;
-  paymentUnpaid: number;
-  paymentPaid: number;
-  expense: number;
+export interface PostResponse {
+  status: string;
+  message: string;
+}
+
+export interface PostHouse {
+  houseNumber: string;
+  occupancyStatus: "occupied" | "vacant";
+}
+
+export interface PostHouseResponse extends PostResponse {
+  data: House;
+}
+
+export interface PostResident {
+  fullName: string;
+  residentStatus: string;
+  phoneNumber: string;
+  maritalStatus: string;
+  houseId: string;
+  dateOfEntry: string;
+  dateOfExit?: string;
+  imageFile?: File;
+}
+
+export interface PostResidentResponse extends PostResponse {
+  data: Resident;
+}
+
+export interface SelectInput {
+  label: string;
+  value: string;
+}
+
+export interface PostExpense {
+  expenseCategoryId: string;
+  amount: number;
+  expenseDate: string;
+  expensePeriod: string;
+}
+
+export interface PostExpenseResponse extends PostResponse {
+  data: Expense;
+}
+
+export interface PostPayment {
+  houseResidentId: string;
+  feeTypeId: string;
+  amount: number;
+  paymentDate: string;
+  paymentPeriod: string;
+}
+
+export interface PostPaymentResponse extends PostResponse {
+  data: Payment;
 }

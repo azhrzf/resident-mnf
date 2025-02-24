@@ -1,15 +1,11 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router";
 import { getResidents } from "@/api/main";
 import { ResidentWithLatestHouse } from "@/api/types";
-import ResidentRow from "@/components/global/ResidentRow";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import ResidentTable from "@/components/global/Resident/ResidentTable";
+import PageTitle from "@/components/global/PageTitle";
+import LoadingSpin from "@/components/global/LoadingSpin";
+import { buttonVariants } from "@/components/ui/button";
 
 const ResidentsPage = () => {
   const [residents, setResidents] = useState<ResidentWithLatestHouse[]>([]);
@@ -31,28 +27,11 @@ const ResidentsPage = () => {
   }, []);
 
   return (
-    <div>
-      <h1>residents Page</h1>
-      {loading && <p>Loading expenses...</p>}
-      {!loading && (
-        <Table>
-          <TableCaption>A list of your recent invoices.</TableCaption>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Nama Lengkap</TableHead>
-              <TableHead>Status Penghuni</TableHead>
-              <TableHead>Rumah Penghuni</TableHead>
-              <TableHead>Nomor Telp Penghuni</TableHead>
-              <TableHead>Status Pernikahan</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {residents.map((resident) => (
-              <ResidentRow key={resident.id} resident={resident} />
-            ))}
-          </TableBody>
-        </Table>
-      )}
+    <div className="space-y-5">
+      <PageTitle title="Penghuni" />
+      <Link to="/add-resident" className={buttonVariants({ variant: "outline" })}>Tambah Penghuni</Link>
+      {loading && <LoadingSpin />}
+      {!loading && <ResidentTable residents={residents} />}
     </div>
   );
 };
