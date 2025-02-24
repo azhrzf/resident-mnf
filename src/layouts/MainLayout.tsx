@@ -10,7 +10,7 @@ const MainLayout = () => {
         <Outlet />
       </div>
       <Toaster />
-      <section className="mt-auto">Footer</section>
+      <section className="mt-auto"></section>
     </section>
   );
 };
