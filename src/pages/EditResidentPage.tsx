@@ -46,8 +46,6 @@ const EditResidentPage = () => {
     }
   };
 
-  console.log(data);
-
   const fileInputRef = useRef<HTMLInputElement>(null!);
   const [imageSrc, setImageSrc] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -66,7 +64,7 @@ const EditResidentPage = () => {
       try {
         const data = await getResidentDetail(id || "");
 
-        const houseResident = data.house_residents[0]
+        const houseResident = data.house_residents[0];
 
         setData((prevState) => ({
           ...prevState,
@@ -82,6 +80,13 @@ const EditResidentPage = () => {
       } catch (error) {
         console.error("Failed to fetch residents:", error);
         setNotFound(true);
+        if (error instanceof AxiosError && error.response) {
+          toast.error(error.response.data.message);
+        } else {
+          if (error instanceof Error) {
+            toast.error(error.message);
+          }
+        }
       }
     };
 
@@ -98,6 +103,13 @@ const EditResidentPage = () => {
         );
       } catch (error) {
         console.error("Failed to fetch houses:", error);
+        if (error instanceof AxiosError && error.response) {
+          toast.error(error.response.data.message);
+        } else {
+          if (error instanceof Error) {
+            toast.error(error.message);
+          }
+        }
       }
     };
 
@@ -130,7 +142,10 @@ const EditResidentPage = () => {
     try {
       setPostLoading(true);
 
-      const response = await putResident({ ...data, imageFile: imageFile || undefined }, id || "");
+      const response = await putResident(
+        { ...data, imageFile: imageFile || undefined },
+        id || ""
+      );
 
       if (response.status === "success") {
         toast.success(response.message);

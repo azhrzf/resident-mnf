@@ -186,6 +186,7 @@ export interface PostPayment {
   amount: number;
   paymentDate: string;
   paymentPeriod: string;
+  paymentStatus: string;
 }
 
 export interface PostPaymentResponse extends PostResponse {

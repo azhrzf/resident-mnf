@@ -35,25 +35,26 @@ const AddExpensePage = () => {
   const [expenseCategoryHandler, setExpenseCategoryHandler] = useState<
     ExpenseCateogry[]
   >([]);
-  const [expenseCategoryLoading, setHouseLoading] = useState(true);
+  const [expenseCategoryLoading, setExpenseCategoryLoading] = useState(true);
   const [postLoading, setPostLoading] = useState(false);
 
   const navigate = useNavigate();
 
   useEffect(() => {
     const matchExpenseCategory = expenseCategoryHandler.find(
-      (expenseCategory) => Number(expenseCategory.id) === Number(data.expenseCategoryId)
+      (expenseCategory) =>
+        Number(expenseCategory.id) === Number(data.expenseCategoryId)
     );
     if (matchExpenseCategory) {
       setData((prevState) => ({
         ...prevState,
-       amount: matchExpenseCategory.default_amount,
+        amount: matchExpenseCategory.default_amount,
       }));
     }
   }, [data.expenseCategoryId, expenseCategoryHandler]);
 
   useEffect(() => {
-    const fetchHouses = async () => {
+    const fetchExpenseCategories = async () => {
       try {
         const data = await getExpenseCategories();
         setExpenseCategories(
@@ -67,12 +68,19 @@ const AddExpensePage = () => {
         setExpenseCategoryHandler(data);
       } catch (error) {
         console.error("Failed to fetch expenseCategories:", error);
+        if (error instanceof AxiosError && error.response) {
+          toast.error(error.response.data.message);
+        } else {
+          if (error instanceof Error) {
+            toast.error(error.message);
+          }
+        }
       } finally {
-        setHouseLoading(false);
+        setExpenseCategoryLoading(false);
       }
     };
 
-    fetchHouses();
+    fetchExpenseCategories();
   }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -81,16 +89,15 @@ const AddExpensePage = () => {
       setPostLoading(true);
 
       const response = await postExpense(data);
-      console.log(response);
+
       if (response.status === "success") {
         toast.success(response.message);
-        navigate("expenses");
+        navigate("/expenses");
       } else {
         toast.error(response.message);
       }
     } catch (error) {
       console.error("Failed to post resident:", error);
-
       if (error instanceof AxiosError && error.response) {
         toast.error(error.response.data.message);
       } else {

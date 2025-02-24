@@ -5,6 +5,8 @@ import HouseCard from "@/components/global/House/HouseCard";
 import HouseAdd from "@/components/global/House/HouseAdd";
 import PageTitle from "@/components/global/PageTitle";
 import LoadingSpin from "@/components/global/LoadingSpin";
+import { toast } from "sonner";
+import { AxiosError } from "axios";
 
 const HousesPage = () => {
   const [houses, setHouses] = useState<House[]>([]);
@@ -17,6 +19,13 @@ const HousesPage = () => {
         setHouses(data);
       } catch (error) {
         console.error("Failed to fetch houses:", error);
+        if (error instanceof AxiosError && error.response) {
+          toast.error(error.response.data.message);
+        } else {
+          if (error instanceof Error) {
+            toast.error(error.message);
+          }
+        }
       } finally {
         setLoading(false);
       }

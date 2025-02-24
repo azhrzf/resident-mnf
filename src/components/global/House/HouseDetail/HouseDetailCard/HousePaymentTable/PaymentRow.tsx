@@ -4,6 +4,8 @@ import { Payment } from "@/api/types";
 import { formatCurrency } from "@/lib/utils";
 import LoadingSpin from "@/components/global/LoadingSpin";
 import { TableCell, TableRow } from "@/components/ui/table";
+import { AxiosError } from "axios";
+import { toast } from "sonner";
 
 const PaymentRow = ({
   payment,
@@ -29,7 +31,13 @@ const PaymentRow = ({
         setPaymentStatus("Lunas");
       }
     } catch (error) {
-      console.error("Error posting resident:", error);
+      if (error instanceof AxiosError && error.response) {
+        toast.error(error.response.data.message);
+      } else {
+        if (error instanceof Error) {
+          toast.error(error.message);
+        }
+      }
     } finally {
       setLoading(false);
     }

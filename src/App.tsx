@@ -10,6 +10,7 @@ import ResidentDetailPage from "./pages/ResidentDetailPage";
 import AddResidentPage from "./pages/AddResidentPage";
 import EditResidentPage from "./pages/EditResidentPage";
 import AddExpensePage from "./pages/AddExpensePage";
+import AddPaymentPage from "./pages/AddPaymentPage";
 import NotFound from "./components/global/NotFound";
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
           <Route path="/add-resident" element={<AddResidentPage />} />
           <Route path="/edit-resident/:id" element={<EditResidentPage />} />
           <Route path="/add-expense" element={<AddExpensePage />} />
+          <Route path="/add-payment" element={<AddPaymentPage />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>

@@ -17,3 +17,18 @@ export function formatCurrency(amount: number): string {
     .replace(/,/g, ".")
     .replace(/~/g, ".");
 }
+
+export const getMonthRange = (startDate: string, endDate: string): string[] => {
+  const result: string[] = [];
+  const currentDate = new Date(startDate);
+  const finalDate = new Date(endDate);
+
+  currentDate.setDate(1);
+
+  while (currentDate <= finalDate) {
+    result.push(currentDate.toISOString().split("T")[0]); 
+    currentDate.setMonth(currentDate.getMonth() + 1); 
+  }
+
+  return result;
+};

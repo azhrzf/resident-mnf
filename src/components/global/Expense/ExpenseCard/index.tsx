@@ -14,7 +14,7 @@ const ExpenseCard = ({ summary }: { summary: ExpenseSummary }) => {
       <AccordionItem value="item-1">
         <AccordionTrigger>
           <h2 className="font-semibold text-lg">
-            Pengeluaran, {summary.month}/{summary.year}
+            Pengeluaran, {summary.date}
           </h2>
         </AccordionTrigger>
         <AccordionContent className="space-y-4">

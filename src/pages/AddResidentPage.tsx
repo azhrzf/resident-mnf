@@ -69,6 +69,13 @@ const AddResidentPage = () => {
         );
       } catch (error) {
         console.error("Failed to fetch houses:", error);
+        if (error instanceof AxiosError && error.response) {
+          toast.error(error.response.data.message);
+        } else {
+          if (error instanceof Error) {
+            toast.error(error.message);
+          }
+        }
       } finally {
         setHouseLoading(false);
       }
@@ -106,7 +113,7 @@ const AddResidentPage = () => {
       }
 
       const response = await postResident({ ...data, imageFile });
-      console.log(response);
+
       if (response.status === "success") {
         toast.success(response.message);
         navigate("/residents");

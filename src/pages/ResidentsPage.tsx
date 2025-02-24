@@ -6,6 +6,8 @@ import ResidentTable from "@/components/global/Resident/ResidentTable";
 import PageTitle from "@/components/global/PageTitle";
 import LoadingSpin from "@/components/global/LoadingSpin";
 import { buttonVariants } from "@/components/ui/button";
+import { toast } from "sonner";
+import { AxiosError } from "axios";
 
 const ResidentsPage = () => {
   const [residents, setResidents] = useState<ResidentWithLatestHouse[]>([]);
@@ -18,6 +20,13 @@ const ResidentsPage = () => {
         setResidents(data);
       } catch (error) {
         console.error("Failed to fetch residents:", error);
+        if (error instanceof AxiosError && error.response) {
+          toast.error(error.response.data.message);
+        } else {
+          if (error instanceof Error) {
+            toast.error(error.message);
+          }
+        }
       } finally {
         setLoading(false);
       }

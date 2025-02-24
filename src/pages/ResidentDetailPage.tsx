@@ -7,6 +7,8 @@ import NotFound from "@/components/global/NotFound";
 import PageTitle from "@/components/global/PageTitle";
 import LoadingSpin from "@/components/global/LoadingSpin";
 import { buttonVariants } from "@/components/ui/button";
+import { toast } from "sonner";
+import { AxiosError } from "axios";
 
 const ResidentDetailPage = () => {
   const { id } = useParams();
@@ -22,6 +24,13 @@ const ResidentDetailPage = () => {
         setResident(data);
       } catch (error) {
         console.error("Failed to fetch houses:", error);
+        if (error instanceof AxiosError && error.response) {
+          toast.error(error.response.data.message);
+        } else {
+          if (error instanceof Error) {
+            toast.error(error.message);
+          }
+        }
         setNotFound(true);
       } finally {
         setLoading(false);

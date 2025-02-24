@@ -15,6 +15,8 @@ import {
   PostExpense,
   PostPaymentResponse,
   HouseResidentInPayment,
+  FeeType,
+  PostPayment,
 } from "./types";
 
 export const backendUrl = import.meta.env.VITE_BACKEND_URL;
@@ -244,6 +246,27 @@ export const postExpense = async (
   }
 };
 
+export const postPayment = async (
+  data: PostPayment
+): Promise<PostPaymentResponse> => {
+  try {
+    const mappedData = {
+      house_resident_id: data.houseResidentId,
+      fee_type_id: data.feeTypeId,
+      amount: data.amount,
+      payment_date: data.paymentDate,
+      payment_period: data.paymentPeriod,
+      payment_status: data.paymentStatus,
+    };
+
+    const response = await axios.post(`${backendUrl}/api/payments`, mappedData);
+    return response.data;
+  } catch (error) {
+    console.error("Error posting resident:", error);
+    throw error;
+  }
+};
+
 export const patchPaymentPaid = async (
   id: string
 ): Promise<PostPaymentResponse> => {
@@ -266,6 +289,16 @@ export const getHouseResidents = async (): Promise<
     return response.data.data;
   } catch (error) {
     console.error("Error fetching house residents:", error);
+    throw error;
+  }
+};
+
+export const getFeeTypes = async (): Promise<FeeType[]> => {
+  try {
+    const response = await axios.get(`${backendUrl}/api/fee-types`);
+    return response.data.data;
+  } catch (error) {
+    console.error("Error fetching fee types:", error);
     throw error;
   }
 };

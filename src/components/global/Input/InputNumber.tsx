@@ -6,6 +6,7 @@ interface InputTextProps {
   labelName: string;
   handleInputTextChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   required?: boolean;
+  disabled?: boolean;
 }
 
 const InputText = ({
@@ -14,6 +15,7 @@ const InputText = ({
   labelName,
   handleInputTextChange,
   required,
+  disabled = false
 }: InputTextProps) => {
   return (
     <div className="space-y-3">
@@ -25,6 +27,7 @@ const InputText = ({
         value={inputValue}
         onChange={handleInputTextChange}
         required={required}
+        disabled={disabled}
       />
     </div>
   );
