@@ -1,4 +1,7 @@
-# DEMO FRONTEND: https://resident-fe.ziakode.com/
+# DEMO FRONTEND: https://resident-fe.ziakode.com/ 
+# DEMO BACKEND: https://resident-be.ziakode.com/
+# REPO FRONTEND: https://github.com/azhrzf/resident-mnf
+# REPO BACKEND: https://github.com/azhrzf/resident-mnb
 
 # Panduan Konfigurasi React Vite Frontend
 
